@@ -4,6 +4,7 @@
   "description": "Curso 'Cypress, do Zero à Nuvem' da Escola Talking About Testing.",
   "main": "src/index.html",
   "scripts": {
+    "start": "python3 -m http.server 3000 --directory src",
     "cy:open": "cypress open",
     "cy:open:mobile": "cypress open --config viewportWidth=410,viewportHeight=860",
     "test": "cypress run",
