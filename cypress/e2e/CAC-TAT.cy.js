@@ -8,21 +8,27 @@ describe('Central de Atendimento ao Cliente TAT', () => {
   })
 
   it('preenche os campos obrigatórios e envia o formulário', () => {
+    cy.clock()
     cy.get('#firstName').type('Fulano')
     cy.get('#lastName').type('da Silva')
     cy.get('#email').type('fulano@example.com')
     cy.get('#open-text-area').type('Gostei muito do curso! Este é um texto mais longo para demonstrar o comportamento do delay. Com delay 0, a digitação acontece de forma imediata!', { delay: 0 })
     cy.contains('Enviar').click()
     cy.get('.success').should('be.visible').and('contain', 'Mensagem enviada com sucesso.')
+    cy.tick(3000)
+    cy.get('.success').should('not.be.visible')
   })
 
   it('exibe mensagem de erro ao submeter o formulário com um email com formatação inválida', () => {
+    cy.clock()
     cy.get('#firstName').type('Fulano')
     cy.get('#lastName').type('da Silva')
     cy.get('#email').type('emailinvalido')
     cy.get('#open-text-area').type('Algum feedback para nós.')
     cy.contains('Enviar').click()
     cy.get('.error').should('be.visible')
+    cy.tick(3000)
+    cy.get('.error').should('not.be.visible')
   })
 
   it('valida que campo de telefone só aceita números', () => {
@@ -137,7 +143,26 @@ describe('Central de Atendimento ao Cliente TAT', () => {
   })
 
   it('envia o formuário com sucesso usando um comando customizado', () => {
+    cy.clock()
     cy.fillMandatoryFieldsAndSubmit()
     cy.get('.success').should('be.visible').and('contain', 'Mensagem enviada com sucesso.')
+    cy.tick(3000)
+    cy.get('.success').should('not.be.visible')
+  })
+
+  it('envia o formulário múltiplas vezes com Cypress._.times()', () => {
+    cy.clock()
+    const messages = ['Primeira mensagem de teste', 'Segunda mensagem de teste', 'Terceira mensagem de teste']
+    
+    Cypress._.times(3, (index) => {
+      cy.get('#firstName').type('Fulano')
+      cy.get('#lastName').type('da Silva')
+      cy.get('#email').type('fulano@example.com')
+      cy.get('#open-text-area').type(messages[index])
+      cy.contains('Enviar').click()
+      cy.get('.success').should('be.visible').and('contain', 'Mensagem enviada com sucesso.')
+      cy.tick(3000)
+      cy.get('.success').should('not.be.visible')
+    })
   })
 })
